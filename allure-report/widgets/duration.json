@@ -1,0 +1,1 @@
+[{"uid":"2e0911c73cae80b4","name":"Login using Excel row dynamically","time":{"start":1764225932488,"stop":1764225939488,"duration":7000},"status":"passed","severity":"critical"},{"uid":"990f880e2689efe3","name":"Login using Excel cell dynamically","time":{"start":1764229358983,"stop":1764229366041,"duration":7058},"status":"passed","severity":"critical"}]

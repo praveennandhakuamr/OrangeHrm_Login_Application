@@ -1,106 +1,57 @@
-// import { test, expect } from "@playwright/test";
-// import { readExcelData } from "../utils/Helper";
-// import LoginPageModule from "../Pages/LoginHRM";
-// const LoginPage = LoginPageModule;
-
-
-// test("HRM login using Excel", async ({ page }) => {
-
-//     const testData = await readExcelData("Data/ExcelData.xlsx");
-
-//     if (testData.length === 0) {
-//         throw new Error("Excel returned zero rows.");
-//     }
-
-//     for (const row of testData) {
-//         const login = new LoginPage(page);
-
-//         await login.goto();
-//         await login.login(row.username, row.password);
-
-//         // verify dashboard: check URL and dashboard heading
-//         await expect(page).toHaveURL(/dashboard/);
-//         await expect(page.locator('h6')).toContainText('Dashboard');
-
-//         console.log(`✔ Login successful for user: ${row.username}`);
-//     }
-// });
-
 import { test, expect } from "@playwright/test";
 import { allure } from "allure-playwright";
-import { readExcelRow } from "../utils/excelUtils";
+import LoginPage from "../Pages/LoginPage";
+import DashboardPage from "../Pages/DashboardPage";
+import { readExcelCell } from "../utils/excelUtils";
 import { exec } from "child_process";
 
-// Only set which Excel row you want to use
-const dataRow = 2; // e.g., 2nd row (after header)
+const usernameCell = { row: 2, col: 1 };
+const passwordCell = { row: 2, col: 2 };
 
-test.describe("Orange HRM Dynamic Login", () => {
+test.describe("OrangeHRM Dynamic Login with POM", () => {
+  test("Login using Excel cell dynamically", async ({ page }) => {
 
-  test("Login using Excel row dynamically", async ({ page }) => {
+    const username = await readExcelCell("TestData/login.xlsx", usernameCell.row, usernameCell.col);
+    const password = await readExcelCell("TestData/login.xlsx", passwordCell.row, passwordCell.col);
 
-    // ------------ Fetch username/password dynamically ------------
-    const excelData = await readExcelRow("TestData/login.xlsx", dataRow);
-    if (!excelData || !excelData.username || !excelData.password) {
-      throw new Error(`No data found at row ${dataRow}`);
-    }
+    if (!username || !password) throw new Error("Username or password not found in Excel");
 
-    const { username, password } = excelData;
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
 
-    // ------------ Allure metadata ------------
+    // Allure Description
     await allure.description(`
-      Dynamic login test fetching credentials from Excel row ${dataRow}:
+      OrangeHRM Dynamic Login Test
       Username: ${username}
       Password: ${password}
       Steps:
         1. Navigate to login page
         2. Enter credentials
         3. Click login
-        4. Validate dashboard
+        4. Verify dashboard header
     `);
     await allure.severity("critical");
-    await allure.owner("Praveen");
-    await allure.tag("Dynamic Login");
+    await allure.tag("POM-Dynamic-Excel");
 
-    // ------------ Test Steps ------------
+    // Steps
     await allure.step("Navigate to login page", async () => {
-      await page.goto("https://opensource-demo.orangehrmlive.com/");
+      await loginPage.navigate();
     });
 
-    await allure.step(`Enter username: ${username}`, async () => {
-      await page.locator('input[name="username"]').fill(username);
-    });
-
-    await allure.step("Enter password", async () => {
-      await page.locator('input[name="password"]').fill(password);
-    });
-
-    await allure.step("Click login button", async () => {
-      await page.locator('button[type="submit"]').click();
+    await allure.step("Enter credentials and login", async () => {
+      await loginPage.enterUsername(username);
+      await loginPage.enterPassword(password);
+      await loginPage.clickLogin();
     });
 
     await allure.step("Verify dashboard page", async () => {
-      // Wait for dashboard URL
-      await page.waitForURL(/dashboard/, { timeout: 10000 });
-
-      // Verify header (Dashboard) is visible
-      await expect(page.locator('h6:has-text("Dashboard")')).toBeVisible({ timeout: 10000 });
-
+      await dashboardPage.verifyDashboardHeader();
       console.log(`✔ Login successful for user: ${username}`);
     });
-
   });
 
-  // ------------ Auto-generate Allure report ------------
   test.afterAll(async () => {
     console.log("Generating Allure report...");
-    exec("allure generate allure-results --clean -o allure-report && allure open allure-report", (err, stdout, stderr) => {
-      if (err) {
-        console.error(`Error generating Allure report: ${err}`);
-        return;
-      }
-      console.log(stdout);
-      console.error(stderr);
-    });
+    exec("allure generate allure-results --clean -o allure-report && allure open allure-report");
   });
-
 });

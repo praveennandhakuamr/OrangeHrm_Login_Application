@@ -1,0 +1,21 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+      Dynamic login test fetching credentials from Excel row 2:
+      Username: Admin
+      Password: admin123
+      Steps:
+        1. Navigate to login page
+        2. Enter credentials
+        3. Click login
+        4. Validate dashboard
+    ","7000","Login using Excel row dynamically","","Thu Nov 27 12:15:32 IST 2025","passed","Thu Nov 27 12:15:39 IST 2025","Orange HRM Dynamic Login","hrmFlow.spec.ts","",""
+"
+      OrangeHRM Dynamic Login Test
+      Username: Admin
+      Password: admin123
+      Steps:
+        1. Navigate to login page
+        2. Enter credentials
+        3. Click login
+        4. Verify dashboard header
+    ","7058","Login using Excel cell dynamically","","Thu Nov 27 13:12:38 IST 2025","passed","Thu Nov 27 13:12:46 IST 2025","OrangeHRM Dynamic Login with POM","hrmFlow.spec.ts","",""

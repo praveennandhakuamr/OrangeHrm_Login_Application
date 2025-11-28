@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@types/node": "^24.10.1",
+     "@types/node": "^24.10.1",
     "@types/xlsx": "^0.0.35",
     "allure-commandline": "^2.34.1",
     "allure-playwright": "^3.4.2"
