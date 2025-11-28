@@ -55,3 +55,4 @@ test.describe("OrangeHRM Dynamic Login with POM", () => {
     exec("allure generate allure-results --clean -o allure-report && allure open allure-report");
   });
 });
+

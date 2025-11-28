@@ -13,5 +13,6 @@ export default defineConfig({
     screenshot: "on",
     video: "off",
     trace: "on",
+    ignoreHTTPSErrors: true, 
   },
 });
